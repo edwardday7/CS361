@@ -28,15 +28,25 @@
             <h5 class="card-title">Signup</h5>
             <form action="/signup" method="post">
               <div class="mb-3">
-                <label for="usernameInput" class="form-label">Username</label>
-                <input type="username" class="form-control" id="usernameInput" name="usernameInput" placeholder="Username">
+                {% if username %}
+                  <label for="usernameInput" class="form-label">Username</label>
+                  <input type="username" class="form-control" id="usernameInput" name="usernameInput" value="{{username}}">
+                {% else %}
+                  <label for="usernameInput" class="form-label">Username</label>
+                  <input type="username" class="form-control" id="usernameInput" name="usernameInput" placeholder="Username">
+                {% endif %}
               </div>
               <div class="mb-3">
-                <label for="passwordInput" class="form-label">Password</label>
-                <input type="password" class="form-control" id="passwordInput" name="passwordInput" placeholder="Password">
+                {% if password %}
+                  <label for="passwordInput" class="form-label">Password</label>
+                  <input type="password" class="form-control" id="passwordInput" name="passwordInput" value="{{password}}">
+                {% else %}
+                  <label for="passwordInput" class="form-label">Password</label>
+                  <input type="password" class="form-control" id="passwordInput" name="passwordInput" placeholder="Password">
+                {% endif %}
               </div>
               <input class="btn btn-primary" type="submit" value="Sign Up">
-              <a class="btn btn-primary" role="button">Generate</a>
+              <a class="btn btn-primary" role="button" href="/signup?generate=true">Generate</a>
             </form>
           </div>
         </div>

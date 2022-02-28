@@ -1,12 +1,33 @@
+#/usr/bin/env python3
+
 from contextlib import redirect_stderr
 from crypt import methods
 from urllib import request
 from flask import Flask, redirect, render_template, request, make_response
 from tinydb import TinyDB, Query
 import uuid
+import socket
 
 app = Flask(__name__)
 db = TinyDB('recipes.json')
+HEADER = 64
+PORT = 5050
+FORMAT = 'utf-8'
+DISCONNECT_MESSAGE = "!DISCONNECT"
+SERVER = '127.0.0.1'
+ADDR = (SERVER, PORT)
+
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client.connect(ADDR)
+
+def send(msg):
+    message = msg.encode(FORMAT)
+    msg_length = len(message)
+    send_length = str(msg_length).encode(FORMAT)
+    send_length += b' ' * (HEADER - len(send_length))
+    client.send(send_length)
+    client.send(message)
+    return client.recv(2048).decode(FORMAT)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -31,7 +52,13 @@ def signup():
         resp = make_response(redirect('/'))
         resp.set_cookie('username', request.form['usernameInput'])
         return resp
-    return render_template('signup.html')
+
+    username = None
+    password = None
+    if request.args.get('generate'):
+        username = send("1").strip() + send("1").strip()
+        password = send("1").strip() + send("1").strip()
+    return render_template('signup.html', username = username, password = password)
 
 @app.route('/', methods=['GET'])
 def home():
